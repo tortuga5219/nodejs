@@ -1,5 +1,9 @@
 var createError = require('http-errors');
 var express = require('express');
+//세션 변수
+var session = require('express-session')
+var FileStore = require('session-file-store')(session); //1 
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -9,9 +13,18 @@ var indexRouter = require('./server/routes/index');
 
 var app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'server/views'));
 app.set('view engine', 'pug');
+
+//세션 정의
+app.use(session({
+  secret: 'tortuga mount',
+  resave: false,
+  saveUninitialized: true,
+  store: new FileStore()
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
