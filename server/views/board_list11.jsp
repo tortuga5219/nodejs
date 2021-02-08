@@ -236,7 +236,10 @@ function delete_chk(){
 		
 }
 </script>
+<script>
+	
 
+</script>
 <style type="text/css">
 
 .table-row{

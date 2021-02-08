@@ -1,0 +1,128 @@
+doctype html
+//
+    <%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+    <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+html
+    head
+        // 루트 폴더에 부트스트랩을 참조하는 링크
+        script(src='https://code.jquery.com/jquery-3.2.1.js')
+        link(href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css', rel='stylesheet')
+        script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js')
+        // 화면 최적화
+        meta(name='viewport', content='width=device-width, initial-scale=1, user-scalable=no')
+        meta(charset='UTF-8')
+        script(type='text/javascript').
+            
+            $(document).ready(function() {
+            $('#detailModal').on('show.bs.modal', function (event) {
+            console.log($(this));
+            var idx = $(event.relatedTarget).data('id');
+            var title = $(event.relatedTarget).data('title');
+            var time = $(event.relatedTarget).data('time');
+            var viecount = $(event.relatedTarget).data('view');
+            var writer = $(event.relatedTarget).data('writer');
+            var content = $(event.relatedTarget).data('content');
+            console.log(idx +","+title+","+viecount+","+time+","+writer+","+content);
+            $("#idx").text(idx);
+            $("#title").text(title);
+            $("#time").text(time);
+            $("#writer").text(writer);
+            $("#content").text(content);
+            var allData = {
+            "idx" : idx,
+            }
+            $.ajax({
+            url:"/count_bo",
+            type:'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(allData),
+            success:function(data){
+            console.log(data);
+            /* alert("정상적으로 등록이 처리되었습니다."); */
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+            alert("에러\\n" + textStatus + " : " + errorThrown);
+            }
+            });
+            });
+            });
+        script(type='text/javascript').
+            function update_chk(){
+            console.log($(this));
+            var idx = $("#idx").text();
+            var title = $("#title").text();
+            var time = $("#time").text();
+            var writer = $("#writer").text();
+            var content = $("#content").text();
+            console.log(idx +","+title+","+time+","+writer+","+content);
+            var allData = {
+            "idx" : idx,
+            "title" : title,
+            "time" : time,
+            "writer" : writer,
+            "content" : content,
+            }
+            $.ajax({
+            url:"/updating",
+            type:'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(allData),
+            success:function(data){
+            /* console.log(data); */
+            /* location.href="/update_bo"; */
+            /* location.href=data; */
+            /* alert("정상적으로 등록이 처리되었습니다."); */
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+            alert("에러\\n" + textStatus + " : " + errorThrown);
+            }
+            });
+            }
+            function delete_chk(){
+            console.log("detect delete")
+            var index = $("#idx").text();
+            var writer = $("#writer").text();
+            console.log(index+","+writer)
+            var allData = {
+            "idx" : index,
+            "writer" : writer,
+            }
+            if(confirm("정말로 삭제 하실건가요")){
+            $.ajax({
+            url:"/delete_bo",
+            type:'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(allData),
+            success:function(data){
+            console.log(data);
+            if(data == 1){
+            alert("정상적으로 삭제 처리되었습니다.");
+            $('#detailModal').modal("hide");
+            location.href="/board_list";
+            }else{
+            alert("본인이 아니면 삭제할 수 없습니다.");
+            }
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+            alert("에러\\n" + textStatus + " : " + errorThrown);
+            }
+            });
+            }else{
+            return;
+            }
+            }
+        script.
+        style(type='text/css').
+            .table-row{
+            cursor:pointer;
+            }
+            li{
+            list-style: none; float: left;
+            }
+        // 스타일시트 참조
+        title neo 게시판
+    body
